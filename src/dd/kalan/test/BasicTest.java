@@ -33,9 +33,9 @@ public class BasicTest {
 	 */
 	public static void main(String[] args) {
 		Emf.PERSISTENCE_UNIT = "Kalan";
-		InterfaceDatabase database = DatabaseImpl.createDatabaseImpl();
-		Container container;
 		try {
+			InterfaceDatabase database = DatabaseImpl.createDatabaseImpl();
+			Container container;
 			container = new Container(database);
 			User user = new User();
 			user.setUsername("mcicheick@yahoo.fr");

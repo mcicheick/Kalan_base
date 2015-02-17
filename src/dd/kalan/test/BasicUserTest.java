@@ -27,7 +27,7 @@ public class BasicUserTest {
 	InterfaceDatabase database;
 
 	@Before
-	public void setup() {
+	public void setup() throws KalanException {
 		System.out.println("Test started...");
 		Emf.PERSISTENCE_UNIT = "Kalan";
 		database = DatabaseImpl.createDatabaseImpl();
@@ -98,12 +98,11 @@ public class BasicUserTest {
 		assertEquals(users.size(), 3);
 	}
 
-	// @Test()
+	@Test(expected = KalanException.class)
 	public void accessTest() throws KalanException {
 		database.logout();
-		// User connected = database.authenticate("mcicheick@yahoo.fr",
-		// "secret");
-		// assertNotNull(connected);
+		User connected = database.authenticate("mcicheick@yahoo.fr", "secret");
+		assertNotNull(connected);
 		User cheick = new User("cheickm.sissoko@gmail.com",
 				Security.hashPassword("secret"));
 		assertNotNull(database.createUser(cheick));

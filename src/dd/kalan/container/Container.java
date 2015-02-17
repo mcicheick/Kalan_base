@@ -26,12 +26,12 @@ public class Container implements InterfaceDatabase {
 	public static final String PARAMETERS_USER_PAGE_LENGTH = "user_page_length";
 	public static final String PARAM_LOGIN = "username";
 	public static final String ACCESS_TYPE = "access_type";
-	public static Integer USER_PAGE_LENGTH = 10;
 	private static final String PARAMS = "parameters";
 	public static final String CONNECTED = "connected";
 	public static final String ACCESS_FAILED = "access_failed";
 	public static final String LOGIN_FAILED = "login_failed";
 
+	public static Integer USER_PAGE_LENGTH = 10;
 	public static int verbose = 0;
 	public static boolean debug = true;
 	/**
@@ -62,7 +62,7 @@ public class Container implements InterfaceDatabase {
 		try {
 			configureContainer();
 		} catch (IOException e) {
-			throw new KalanException(e.getCause());
+			throw new KalanException(e);
 		}
 		// instantiate the Interceptor Proxies
 		InterceptorProxy[] proxies = new InterceptorProxy[this.serviceNames.length];
@@ -109,15 +109,13 @@ public class Container implements InterfaceDatabase {
 	 */
 	private void configureContainer() throws IOException {
 		Config config = Config.readFromFile(DEPLOYMENT_DESCRIPTOR_FILE_NAME);
-		if (verbose > 0)
+		if (verbose > 1)
 			System.out.println(config);
 		Container.verbose = config.getParamAsInteger("verbose", 0);
 		Container.debug = config.getParamAsBoolean("debug", false);
-		String sn = (String) config.getParam("serviceNames", "Logging_Service");
-		USER_PAGE_LENGTH = config.getParamAsInteger(
+		String sn = config.getParamAsString("serviceNames", "Logging_Service");
+		Container.USER_PAGE_LENGTH = config.getParamAsInteger(
 				PARAMETERS_USER_PAGE_LENGTH, 10);
-		if (Container.verbose > 0)
-			System.out.println("serviceNames = " + sn);
 		serviceNames = sn.split(",");
 	}
 
@@ -132,7 +130,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User createUser(User)");
+				"dd.kalan.models.User#createUser(User)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ user);
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -158,7 +156,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User findUserById(Long)");
+				"dd.kalan.models.User#findUserById(Long)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ id);
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -181,7 +179,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User updateUser(User)");
+				"dd.kalan.models.User#updateUser(User)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ user);
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -207,7 +205,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User deleteUser(Long)");
+				"dd.kalan.models.User#deleteUser(Long)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ id);
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -233,7 +231,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User findUserByPage(Long)");
+				"dd.kalan.models.User#findUserByPage(Long)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ page);
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -256,7 +254,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User findUserByUsername(String)");
+				"dd.kalan.models.User#findUserByUsername(String)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ username);
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -279,7 +277,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User findAllUser()");
+				"dd.kalan.models.User#findAllUser()");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ "()");
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -302,7 +300,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User deleteAllUser()");
+				"dd.kalan.models.User#deleteAllUser()");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ "()");
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -329,7 +327,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User  authenticate(String, String)");
+				"dd.kalan.models.User#authenticate(String, String)");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ "(" + username + ", *******)");
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);
@@ -358,7 +356,7 @@ public class Container implements InterfaceDatabase {
 		Context ctx = this.getSingletonContext();
 		// add method-related information to the context
 		ctx.setParam(Container.METHOD_PARAM_NAME,
-				"dd.kalan.models.User  logout()");
+				"dd.kalan.models.User#logout()");
 		ctx.setParam(Container.PARAMETERS_PARAM_NAME, Container.PARAMS + "="
 				+ "()");
 		ctx.setParam(Container.LOG_LEVEL, Level.INFO);

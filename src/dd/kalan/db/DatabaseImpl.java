@@ -3,6 +3,7 @@
  */
 package dd.kalan.db;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,6 +22,7 @@ import dd.kalan.security.Security;
 public class DatabaseImpl implements InterfaceDatabase, Dao {
 
 	private static EntityManager em;
+	private static Container container;
 
 	/**
 	 * 
@@ -28,15 +30,12 @@ public class DatabaseImpl implements InterfaceDatabase, Dao {
 	private DatabaseImpl() {
 	}
 
-	public static InterfaceDatabase createDatabaseImpl() {
-		DatabaseImpl database = new DatabaseImpl();
-		Container container;
-		try {
+	public static InterfaceDatabase createDatabaseImpl() throws KalanException {
+		if (container == null) {
+			DatabaseImpl database = new DatabaseImpl();
 			container = new Container(database);
-			return container;
-		} catch (KalanException e) {
-			return null;
 		}
+		return container;
 	}
 
 	/*
@@ -93,6 +92,7 @@ public class DatabaseImpl implements InterfaceDatabase, Dao {
 		try {
 			em = getEntityManager();
 			em.getTransaction().begin();
+			user.setModificationDate(new Date());
 			em.merge(user);
 			em.getTransaction().commit();
 			return user;
@@ -105,7 +105,7 @@ public class DatabaseImpl implements InterfaceDatabase, Dao {
 							+ " no longer exists.");
 				}
 			}
-			throw new KalanException(ex.getCause());
+			throw new KalanException(ex);
 		} finally {
 			if (em != null) {
 				em.close();
